@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>ToolHUB</title>
+    <link rel="stylesheet" href="src/css/main.css">
+    <link rel="shortcut icon" href="src/res/favicon.png" type="image/x-icon">
+</head>
+<body>
+<header>
+    theme
+    <a href="directions/versions">Versions</a>
+</header>
+<!-- Основной контент страницы -->
+<main>
+    <section class="directions-container">
+        <h2 class="section-title">Центр <span style="color: cornflowerblue">инструментов</span></h2>
+
+        <!-- Сетка для карточек -->
+        <div class="directions-grid">
+
+            <!-- Карточка 1: Активная (Интеграция) -->
+            <a href="https://example.com" class="direction">
+                <div class="card-header">
+                    <div class="icon">⚙️</div>
+                    <h3 class="name">integration</h3>
+                    <span class="status-tag v-success">Ver 0.1</span>
+                </div>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <div class="card-footer">
+                    <span class="enter-link">enter</span>
+                </div>
+            </a>
+
+            <!-- Карточка 2: На доработке (Вебхуки) -->
+            <a href="https://example.com" class="direction disabled-warning">
+                <div class="card-header">
+                    <div class="icon">🛠️</div>
+                    <h3 class="name">webhooks</h3>
+                    <span class="status-tag v-warning">доработка</span>
+                </div>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <div class="card-footer">
+                    <span class="enter-link">enter</span>
+                </div>
+            </a>
+
+            <!-- Карточка 3: Закрытая (Доступ к API) -->
+            <a href="#" class="direction disabled-danger" onclick="return false;">
+                <div class="card-header">
+                    <div class="icon">🔒</div>
+                    <h3 class="name">API Access</h3>
+                    <span class="status-tag v-danger">закрыто</span>
+                </div>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <div class="card-footer">
+                    <span class="enter-link">not available</span>
+                </div>
+            </a>
+
+        </div>
+    </section>
+</main>
+
+<!-- Подвал сайта -->
+<footer>
+    <p>
+        Contact us: <a href="mailto:ondrax.studio@outlook.com">ondrax.studio@outlook.com</a>
+    </p>
+</footer>
+
+</body>
+</html>

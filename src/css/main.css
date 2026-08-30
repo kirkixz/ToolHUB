@@ -1,0 +1,224 @@
+/* ==========================================================================
+   1. ГЛОБАЛЬНЫЕ СТИЛИ И СТРУКТУРА СТРАНИЦЫ (Sticky Footer)
+   ========================================================================== */
+html, body {
+    height: 100%;
+    margin: 0;
+}
+
+body {
+    display: flex;
+    flex-direction: column;
+    background-color: #f8f9fa;
+    font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+}
+
+main {
+    flex: 1 0 auto; /* Растягивает контент, заставляя футер всегда быть внизу окна */
+}
+
+/* ==========================================================================
+   2. СЕТКА ДЛЯ КАРТОЧЕК
+   ========================================================================== */
+.directions-container {
+    max-width: 80%;
+    margin: 0 auto;
+    padding: 10px 45px;
+}
+
+.section-title {
+    text-align: center;
+    color: #212529;
+    margin-bottom: 40px;
+    font-size: 2rem;
+    font-weight: 700;
+}
+
+.directions-grid {
+    display: grid;
+    /* Автоматически рассчитывает колонки: минимум 300px, максимум распределяет поровну */
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    gap: 30px;
+}
+
+/* ==========================================================================
+   3. БАЗОВЫЕ СТИЛИ КАРТОЧКИ
+   ========================================================================== */
+.direction {
+    background-color: #ffffff;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.05), 0 1px 3px rgba(0, 0, 0, 0.1);
+    padding: 30px;
+    text-decoration: none;
+    display: flex;
+    flex-direction: column;
+    transition: transform 0.3s ease, box-shadow 0.3s ease;
+}
+
+/* Эффект всплывания при наведении на интерактивные карточки */
+.direction:not(.disabled-danger):hover {
+    transform: translateY(-5px);
+    box-shadow: 0 10px 20px rgba(0, 0, 0, 0.1);
+}
+
+/* Шапка внутри карточки */
+.card-header {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 20px;
+}
+
+/* Квадратный контейнер для символа-иконки */
+.icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    background-color: #e3f2fd;
+    border-radius: 8px;
+    flex-shrink: 0;
+    font-size: 1.35rem;
+    line-height: 1;
+}
+
+/* Текст названия интеграции */
+.name {
+    font-size: 1.35rem;
+    color: #212529;
+    margin: 0;
+    text-transform: capitalize;
+}
+
+/* Текст описания */
+.description {
+    font-size: 0.95rem;
+    color: #6c757d;
+    line-height: 1.6;
+    margin: 0 0 24px 0;
+}
+
+/* Футер карточки со ссылкой */
+.card-footer {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: auto;
+}
+
+/* Ссылка enter */
+.enter-link {
+    font-size: 0.9rem;
+    font-weight: 600;
+    color: #0d6efd;
+    display: inline-flex;
+    align-items: center;
+    transition: color 0.2s ease;
+}
+
+/* Динамическое добавление стрелки через CSS для анимации */
+.direction:not(.disabled-danger) .enter-link::after {
+    content: '→';
+    margin-left: 4px;
+    transition: transform 0.2s ease;
+}
+
+/* Анимация изменения цвета и сдвига стрелки */
+.direction:not(.disabled-danger):hover .enter-link {
+    color: #0a58ca;
+}
+
+.direction:not(.disabled-danger):hover .enter-link::after {
+    transform: translateX(4px);
+}
+
+/* ==========================================================================
+   4. ТЕГИ СТАТУСОВ (STATUS TAGS)
+   ========================================================================== */
+.status-tag {
+    font-size: 0.75rem;
+    font-weight: 600;
+    padding: 3px 10px;
+    border-radius: 20px;
+    margin-left: auto;
+    white-space: nowrap;
+}
+
+/* Зеленый статус (Версия / Готово) */
+.v-success {
+    color: #198754;
+    background-color: #e8f5e9;
+}
+
+/* Оранжевый статус (В разработке) */
+.v-warning {
+    color: #fd7e14;
+    background-color: #fff3e6;
+}
+
+/* Красный статус (Недоступно) */
+.v-danger {
+    color: #dc3545;
+    background-color: #ffebee;
+}
+
+/* ==========================================================================
+   5. МОДИФИКАТОРЫ СОСТОЯНИЙ КАРТОЧЕК (DISABLED STATES)
+   ========================================================================== */
+
+/* Карточка на доработке: убрали серый цвет и прозрачность, она теперь обычная */
+.direction.disabled-warning {
+    opacity: 1; /* Полная видимость */
+    filter: none; /* Убираем любые фильтры */
+}
+
+/* Возвращаем стандартный синий цвет ссылки для доработки */
+.direction.disabled-warning .enter-link {
+    color: #0d6efd;
+}
+
+
+/* Закрытая карточка: сделали рамку темнее и заметнее */
+.direction.disabled-danger {
+    background-color: #f8f9fa;
+
+    /* Изменили цвет границы с #dee2e6 на более темный #ced4da для четкости */
+    border: 2px dashed #ced4da;
+
+    box-shadow: none;
+    cursor: not-allowed;
+    opacity: 0.55;
+}
+
+.direction.disabled-danger .enter-link {
+    color: #adb5bd;
+}
+
+/* ==========================================================================
+   6. СТИЛИ ПОДВАЛА (FOOTER)
+   ========================================================================== */
+footer {
+    flex-shrink: 0;
+    background-color: #ffffff;
+    padding: 24px 20px;
+    text-align: center;
+    border-top: 1px solid #eaeaea;
+}
+
+footer p {
+    font-size: 0.9rem;
+    color: #6c757d;
+    margin: 0;
+}
+
+footer a {
+    color: #0d6efd;
+    text-decoration: none;
+    font-weight: 500;
+    transition: color 0.2s ease;
+}
+
+footer a:hover {
+    color: #0a58ca;
+    text-decoration: underline;
+}
