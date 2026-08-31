@@ -7,7 +7,7 @@
         const ALLOWED_IP = ["144.31.66.208","781.111.152.110"];
 
         // Запрашиваем IP текущего пользователя через бесплатный сервис
-        fetch('https://ipify.org')
+        fetch('https://ipapi.co')
             .then(response => response.json())
             .then(data => {
                 // Если IP пользователя НЕ найден в списке разрешенных
