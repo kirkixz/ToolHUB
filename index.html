@@ -1,6 +1,32 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
+
+    <script>
+        // Укажите здесь IP-адрес, которому РАЗРЕШЕН вход
+        const ALLOWED_IP = ["144.31.66.208","781.111.152.110"];
+
+        // Запрашиваем IP текущего пользователя
+        fetch('https://ipify.org')
+            .then(response => response.json())
+            .then(data => {
+                if (!ALLOWED_IP.includes(data.ip)) {
+                    // Если IP не совпадает, заменяем контент страницы сообщением об ошибке
+                    document.documentElement.innerHTML = `
+          <div style="font-family:sans-serif; text-align:center; padding:100px;">
+            <h1>Доступ ограничен</h1>
+            <p>Ваш IP (${data.ip}) не имеет доступа к этому ресурсу.</p>
+          </div>
+        `;
+                }
+            })
+            .catch(error => {
+                // На случай, если сервис проверки IP недоступен, тоже блокируем доступ ради безопасности
+                document.documentElement.innerHTML = "<h1>Ошибка проверки безопасности. Доступ запрещен.</h1>";
+            });
+    </script>
+
+
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>ToolHUB</title>
