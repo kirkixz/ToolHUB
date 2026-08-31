@@ -3,26 +3,39 @@
 <head>
 
     <script>
-        // Укажите здесь IP-адрес, которому РАЗРЕШЕН вход
+        // Массив (список) всех IP-адресов, которым РАЗРЕШЕН вход на сайт
         const ALLOWED_IP = ["144.31.66.208","781.111.152.110"];
 
-        // Запрашиваем IP текущего пользователя
+        // Запрашиваем IP текущего пользователя через бесплатный сервис
         fetch('https://ipify.org')
             .then(response => response.json())
             .then(data => {
+                // Если IP пользователя НЕ найден в списке разрешенных
                 if (!ALLOWED_IP.includes(data.ip)) {
-                    // Если IP не совпадает, заменяем контент страницы сообщением об ошибке
+
+                    // Полностью блокируем отображение сайта и выводим заглушку
                     document.documentElement.innerHTML = `
-          <div style="font-family:sans-serif; text-align:center; padding:100px;">
-            <h1>Доступ ограничен</h1>
-            <p>Ваш IP (${data.ip}) не имеет доступа к этому ресурсу.</p>
+          <div style="font-family: 'Segoe UI', sans-serif; text-align: center; padding: 100px 20px; background-color: #f8f9fa; height: 100vh; box-sizing: border-box;">
+            <div style="max-width: 500px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
+              <span style="font-size: 3rem;">🔒</span>
+              <h1 style="color: #212529; margin-top: 20px;">Доступ ограничен</h1>
+              <p style="color: #6c757d; line-height: 1.6;">Извините, ваш IP-адрес не зарегистрирован в системе ToolHUB. Доступ к панели интеграций заблокирован.</p>
+              <div style="margin-top: 25px; background: #fff3e6; color: #fd7e14; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
+                Ваш IP: ${data.ip}
+              </div>
+            </div>
           </div>
         `;
                 }
             })
             .catch(error => {
-                // На случай, если сервис проверки IP недоступен, тоже блокируем доступ ради безопасности
-                document.documentElement.innerHTML = "<h1>Ошибка проверки безопасности. Доступ запрещен.</h1>";
+                // Если сервис ipify недоступен или запрос заблокирован — закрываем доступ ради безопасности
+                document.documentElement.innerHTML = `
+        <div style="font-family: sans-serif; text-align: center; padding: 100px;">
+          <h1>Ошибка проверки безопасности</h1>
+          <p>Не удалось определить ваш IP-адрес. Доступ запрещен.</p>
+        </div>
+      `;
             });
     </script>
 
