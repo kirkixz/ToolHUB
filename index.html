@@ -3,41 +3,199 @@
 <head>
 
     <script>
-        // Массив (список) всех IP-адресов, которым РАЗРЕШЕН вход на сайт
-        const ALLOWED_IP = ["144.31.66.208","781.111.152.110"];
+        (() => {
+            'use strict';
 
-        // Запрашиваем IP текущего пользователя через бесплатный сервис
-        fetch('https://ipapi.co')
-            .then(response => response.json())
-            .then(data => {
-                // Если IP пользователя НЕ найден в списке разрешенных
-                if (!ALLOWED_IP.includes(data.ip)) {
+            const ALLOWED_IP = [
+                '144.31.66.208',
+                '78.111.152.11'
+            ];
 
-                    // Полностью блокируем отображение сайта и выводим заглушку
-                    document.documentElement.innerHTML = `
-          <div style="font-family: 'Segoe UI', sans-serif; text-align: center; padding: 100px 20px; background-color: #f8f9fa; height: 100vh; box-sizing: border-box;">
-            <div style="max-width: 500px; margin: 0 auto; background: #fff; padding: 40px; border-radius: 12px; box-shadow: 0 4px 15px rgba(0,0,0,0.05);">
-              <span style="font-size: 3rem;">🔒</span>
-              <h1 style="color: #212529; margin-top: 20px;">Доступ ограничен</h1>
-              <p style="color: #6c757d; line-height: 1.6;">Извините, ваш IP-адрес не зарегистрирован в системе ToolHUB. Доступ к панели интеграций заблокирован.</p>
-              <div style="margin-top: 25px; background: #fff3e6; color: #fd7e14; padding: 10px; border-radius: 6px; font-family: monospace; font-size: 0.9rem;">
-                Ваш IP: ${data.ip}
-              </div>
-            </div>
-          </div>
-        `;
+            const BLOCKED_HTML = `
+        <!DOCTYPE html>
+        <html lang="ru">
+        <head>
+            <meta charset="UTF-8">
+            <meta name="viewport" content="width=device-width, initial-scale=1.0">
+            <title>Доступ ограничен</title>
+            <style>
+                * {
+                    box-sizing: border-box;
                 }
+
+                html,
+                body {
+                    margin: 0;
+                    width: 100%;
+                    height: 100%;
+                }
+
+                body {
+                    background: #f8f9fa;
+                    font-family: 'Segoe UI', Arial, sans-serif;
+
+                    display: flex;
+                    align-items: center;
+                    justify-content: center;
+
+                    padding: 20px;
+                }
+
+                .card {
+                    width: 100%;
+                    max-width: 500px;
+
+                    background: #fff;
+
+                    padding: 40px;
+
+                    border-radius: 12px;
+
+                    box-shadow:
+                        0 4px 15px rgba(0,0,0,.05);
+
+                    text-align: center;
+                }
+
+                .icon {
+                    font-size: 48px;
+                    margin-bottom: 20px;
+                }
+
+                h1 {
+                    margin: 0 0 12px;
+
+                    color: #212529;
+
+                    font-size: 32px;
+                    font-weight: 700;
+                }
+
+                p {
+                    margin: 0 0 25px;
+
+                    color: #6c757d;
+
+                    font-size: 16px;
+                    line-height: 1.6;
+                }
+
+                .ip {
+                    display: inline-block;
+
+                    padding: 12px 16px;
+
+                    border-radius: 6px;
+
+                    background: #fff3e6;
+                    color: #fd7e14;
+
+                    font-family: monospace;
+                    font-size: 15px;
+                    font-weight: 600;
+                }
+            </style>
+        </head>
+
+        <body>
+            <div class="card">
+                <div class="icon">🔒</div>
+
+                <h1>Доступ ограничен</h1>
+
+                <p>
+                    Извините, ваш IP-адрес не зарегистрирован
+                    в системе ToolHUB. Доступ к панели интеграций
+                    заблокирован.
+                </p>
+
+                <div class="ip">
+                    Ваш IP: {{IP}}
+                </div>
+            </div>
+        </body>
+        </html>
+    `;
+
+            function blockSite(ip) {
+
+                // Полностью заменяем DOM документа
+                document.open();
+
+                document.write(
+                    BLOCKED_HTML.replace(
+                        '{{IP}}',
+                        String(ip)
+                    )
+                );
+
+                document.close();
+
+                // Дополнительно запрещаем переход назад
+                try {
+                    history.replaceState(null, '', location.href);
+                } catch (e) {}
+
+                // Если кто-то попытается вернуть страницу —
+                // снова заменяем её
+                setInterval(() => {
+
+                    if (
+                        !document.body ||
+                        !document.body.querySelector('.card')
+                    ) {
+                        document.open();
+
+                        document.write(
+                            BLOCKED_HTML.replace(
+                                '{{IP}}',
+                                String(ip)
+                            )
+                        );
+
+                        document.close();
+                    }
+
+                }, 500);
+            }
+
+            fetch('https://api.ipify.org?format=json', {
+                cache: 'no-store'
             })
-            .catch(error => {
-                // Если сервис ipify недоступен или запрос заблокирован — закрываем доступ ради безопасности
-                document.documentElement.innerHTML = `
-        <div style="font-family: sans-serif; text-align: center; padding: 100px;">
-          <h1>Ошибка проверки безопасности</h1>
-          <p>Не удалось определить ваш IP-адрес. Доступ запрещен.</p>
-        </div>
-      `;
-            });
+                .then(response => {
+                    if (!response.ok) {
+                        throw new Error('IP API error');
+                    }
+
+                    return response.json();
+                })
+                .then(data => {
+
+                    const ip = data.ip;
+
+                    console.log('IP:', ip);
+
+                    if (!ALLOWED_IP.includes(ip)) {
+                        blockSite(ip);
+                    } else {
+                        console.log('Доступ разрешён');
+                    }
+
+                })
+                .catch(error => {
+
+                    console.error(
+                        'Ошибка проверки IP:',
+                        error
+                    );
+
+                    // При ошибке считаем пользователя запрещённым
+                    blockSite('не определён');
+                });
+
+        })();
     </script>
+
 
 
     <meta charset="UTF-8">
@@ -66,7 +224,8 @@
                     <h3 class="name">integration</h3>
                     <span class="status-tag v-success">Ver 0.1</span>
                 </div>
-                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa
+                    odit</p>
                 <div class="card-footer">
                     <span class="enter-link">enter</span>
                 </div>
@@ -79,7 +238,8 @@
                     <h3 class="name">webhooks</h3>
                     <span class="status-tag v-warning">доработка</span>
                 </div>
-                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa
+                    odit</p>
                 <div class="card-footer">
                     <span class="enter-link">enter</span>
                 </div>
@@ -92,7 +252,8 @@
                     <h3 class="name">API Access</h3>
                     <span class="status-tag v-danger">закрыто</span>
                 </div>
-                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa odit</p>
+                <p class="description">Lorem ipsum dolor sit amet consectetur adipisicing elit. Tempora unde culpa
+                    odit</p>
                 <div class="card-footer">
                     <span class="enter-link">not available</span>
                 </div>
